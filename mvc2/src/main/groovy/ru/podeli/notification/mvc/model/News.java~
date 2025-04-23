@@ -1,0 +1,4 @@
+package ru.podeli.notification.mvc.model;
+
+public class News {
+}

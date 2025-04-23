@@ -1,0 +1,57 @@
+openapi: 3.0.1
+info:
+  title: Новостной API
+  description: API для работы с новостями
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Локальный сервер разработки
+paths:
+  /v1/news:
+    get:
+      summary: Получение новости по ID
+      description: Возвращает новость по указанному идентификатору
+      operationId: getNews
+      tags:
+        - Новости
+      parameters:
+        - name: id
+          in: query
+          description: ID новости
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Новость успешно найдена
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsDTO'
+        '404':
+          description: Новость не найдена
+components:
+  schemas:
+    NewsDTO:
+      type: object
+      description: Модель новости
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Идентификатор новости
+        title:
+          type: string
+          description: Заголовок новости
+        content:
+          type: string
+          description: Содержание новости
+        publishDate:
+          type: string
+          format: date-time
+          description: Дата публикации
+      required:
+        - id
+        - title
+        - content

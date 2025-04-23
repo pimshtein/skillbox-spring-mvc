@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Новостной портал</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- 1. Базовые выражения -->
+    <h1 th:text="${message}">Добро пожаловать на новостной портал</h1>
+    <p>Текущая дата: <span th:text="${#temporals.format(currentDate, 'dd.MM.yyyy HH:mm')}">дата</span></p>
+    
+    <!-- 2. Условные операторы -->
+    <div th:if="${isAdmin}">
+        <p>Вы вошли как администратор</p>
+    </div>
+    <div th:unless="${isAdmin}">
+        <p>Вы вошли как обычный пользователь</p>
+    </div>
+    
+    <!-- 3. Работа с объектами -->
+    <div th:if="${news != null}">
+        <article>
+            <h2 th:text="${news.title}">Заголовок новости</h2>
+            <p th:text="${news.content}">Содержание новости...</p>
+            <div class="news-meta">
+                <span>Автор: <strong th:text="${news.author}">Имя автора</strong></span>
+                <span>Опубликовано: <time th:text="${#temporals.format(news.publicationDate, 'dd.MM.yyyy HH:mm')}">Дата публикации</time></span>
+            </div>
+        </article>
+    </div>
+    
+    <!-- 4. Итерация по списку -->
+    <h3>Последние новости</h3>
+    <ul>
+        <li th:each="item : ${newsList}">
+            <h4 th:text="${item.title}">Заголовок</h4>
+            <p th:text="${item.content}">Содержание</p>
+            <span th:text="${item.author}">Автор</span>
+        </li>
+    </ul>
+    
+    <!-- 5. Работа с Map -->
+    <div th:if="${userInfo != null}">
+        <h3>Информация о пользователе</h3>
+        <ul>
+            <li>Имя: <span th:text="${userInfo.name}">Имя</span></li>
+            <li>Email: <span th:text="${userInfo.email}">Email</span></li>
+            <li>Роль: <span th:text="${userInfo.role}">Роль</span></li>
+        </ul>
+    </div>
+    
+    <!-- 6. Работа с массивами -->
+    <h3>Категории новостей</h3>
+    <ul>
+        <li th:each="category : ${categories}" th:text="${category}">Категория</li>
+    </ul>
+    
+    <!-- 7. Встроенные выражения -->
+    <div th:with="firstNews=${newsList[0]}">
+        <h3>Первая новость в списке</h3>
+        <p th:text="${firstNews.title}">Заголовок</p>
+    </div>
+    
+    <!-- 8. Условные атрибуты -->
+    <div th:class="${isAdmin ? 'admin-panel' : 'user-panel'}">
+        Панель управления
+    </div>
+    
+    <!-- 9. Форматирование дат -->
+    <div>
+        <h3>Форматирование дат</h3>
+        <p>Полная дата: <span th:text="${#temporals.format(currentDate, 'dd.MM.yyyy HH:mm:ss')}">дата</span></p>
+        <p>Только дата: <span th:text="${#temporals.format(currentDate, 'dd.MM.yyyy')}">дата</span></p>
+        <p>Только время: <span th:text="${#temporals.format(currentDate, 'HH:mm')}">время</span></p>
+    </div>
+    
+    <!-- 10. Безопасный вывод HTML -->
+    <div th:utext="${news.content}">Содержание с HTML-тегами</div>
+    
+    <div th:unless="${news != null}">
+        <p>Новости временно недоступны</p>
+    </div>
+</body>
+</html> 

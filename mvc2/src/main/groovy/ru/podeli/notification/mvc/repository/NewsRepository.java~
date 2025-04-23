@@ -1,0 +1,4 @@
+package ru.podeli.notification.mvc.repository;
+
+public class NewsRepository {
+}
