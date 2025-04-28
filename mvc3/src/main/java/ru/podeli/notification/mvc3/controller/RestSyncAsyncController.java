@@ -1,16 +1,21 @@
 package ru.podeli.notification.mvc3.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 import ru.podeli.notification.mvc3.model.News;
 
+import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @RestController
+@Slf4j
 public class RestSyncAsyncController {
     
     @GetMapping("/news/json")
@@ -73,5 +78,42 @@ public class RestSyncAsyncController {
 
         // Результат пользователю возвращаем сразу, не дожидаясь завершения асинхронной операции
         return ResponseEntity.ok("Процесс парсинга успешно запущен");
+    }
+
+    @GetMapping("/news/parallel")
+    public CompletableFuture<Map<String, Object>> getParallelNews() {
+        long startTime = System.currentTimeMillis();
+        // Задача 1. Получение основной новости из какого-то ресурса.
+        CompletableFuture<News> mainNews = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(3);
+                return new News(1L, "Главная новость", "Содержание главной новости...");
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Задача 2: Получение связанных новостей из других источников.
+        CompletableFuture<List<News>> relatedNews = CompletableFuture.supplyAsync(() -> {
+            try {
+                TimeUnit.SECONDS.sleep(5);
+                return List.of(
+                        new News(2L, "Связанная новость 1", "Содержание 1..."),
+                        new News(3L, "Связанная новость 2", "Содержание 2...")
+                );
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        // Комбинируем результаты обеих задач
+        return mainNews.thenCombineAsync(relatedNews, (main, related) -> {
+            Map<String, Object> result = new HashMap<>();
+            result.put("mainNews", main);
+            result.put("relatedNews", related);
+            result.put("timestamp", Instant.now());
+            log.info("Время работы: {}", System.currentTimeMillis() - startTime);
+            return result;
+        });
     }
 }

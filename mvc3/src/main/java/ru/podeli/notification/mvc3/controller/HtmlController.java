@@ -9,7 +9,7 @@ import ru.podeli.notification.mvc3.model.News;
 public class HtmlController {
     
     @GetMapping("/news/html")
-    public String getNews(Model model) { // model - объект для хранения аттрибута "news" для шаблона
+    public String getNews(Model model) { // model - специализированный объект для хранения аттрибута "news" для шаблона
         News news = new News(1L, "Заголовок новости", "Содержимое новости");
         model.addAttribute("news", news);
 
