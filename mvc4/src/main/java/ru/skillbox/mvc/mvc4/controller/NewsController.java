@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/news")
 public class NewsController {
     private TreeMap<Long, NewsDto> news = new TreeMap<>();
 
@@ -19,18 +19,23 @@ public class NewsController {
         return ResponseEntity.ok(news);
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<NewsDto> create(@RequestBody NewsDto newsDto) {
         Map.Entry<Long, NewsDto> lastSavedNews = news.lastEntry();
 
-        return ResponseEntity.ok(news.put(lastSavedNews.getKey() + 1, newsDto));
+        Long lastKey = 0L;
+        if (lastSavedNews != null) {
+            lastKey = lastSavedNews.getKey();
+        }
+
+        return ResponseEntity.ok(news.put(lastKey + 1, newsDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody NewsDto newsDto) {
+    public ResponseEntity<Object> update(@PathVariable("id") Long id, @RequestBody NewsDto newsDto) {
         if (news.containsKey(id)) {
             news.put(id, newsDto);
-            return ResponseEntity.ok(newsDto);
+            return ResponseEntity.ok(news.get(id));
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorDto("NOT_FOUND",
@@ -41,7 +46,7 @@ public class NewsController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         if (news.containsKey(id)) {
             news.remove(id);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.notFound().build();
