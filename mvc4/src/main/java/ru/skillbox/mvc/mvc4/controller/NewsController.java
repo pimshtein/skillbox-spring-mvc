@@ -15,7 +15,7 @@ public class NewsController {
     private TreeMap<Long, NewsDto> news = new TreeMap<>();
 
     @GetMapping()
-    public ResponseEntity<TreeMap<Long, NewsDto>> getAll() {
+    public ResponseEntity<TreeMap<Long, NewsDto>> read() {
         return ResponseEntity.ok(news);
     }
 
