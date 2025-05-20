@@ -2,9 +2,9 @@
 // Подключение к базе данных PostgreSQL
 $host = 'localhost';
 $port = '5432';
-$dbname = 'bnpl';
-$user = 'bnpl';
-$password = 'bnpl';
+$dbname = 'test';
+$user = 'test';
+$password = 'test';
 
 // Устанавливаем соединение с PostgreSQL
 $conn = pg_connect("host=$host port=$port dbname=$dbname user=$user password=$password");
