@@ -28,7 +28,11 @@ public class NewsController {
             lastKey = lastSavedNews.getKey();
         }
 
-        return ResponseEntity.ok(news.put(lastKey + 1, newsDto));
+        Long nextId = lastKey + 1;
+        newsDto.setId(nextId);
+        news.put(nextId, newsDto);
+
+        return ResponseEntity.ok(newsDto);
     }
 
     @PutMapping("/{id}")
